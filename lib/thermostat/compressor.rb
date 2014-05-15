@@ -18,8 +18,15 @@ module Thermostat
 			end
 
 			event :idle do
-				transitions from: :cooling_down, to: :idle
+				transitions from: :cooling_down, to: :idle, guard: :cooled_down?
 			end
+
+
+		end
+
+		private
+		def cooled_down?
+			false
 		end
 	end
 end
