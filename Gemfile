@@ -5,4 +5,4 @@ gemspec
 
 gem 'aasm', '~> 3.1'
 gem 'minitest', '~> 5.3'
-gem 'rr', '~> 1.0'
+gem 'rr', '~> 1.1'
