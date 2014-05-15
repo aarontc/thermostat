@@ -1,4 +1,4 @@
-require "thermostat/version"
+require 'thermostat/version'
 
 module Thermostat
   # Your code goes here...
