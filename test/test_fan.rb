@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'timers'
 
 require 'thermostat/fan'
 
@@ -26,6 +27,24 @@ class TestFan < Minitest::Test
 
 		@f.stop
 		assert @f.idle?
+	end
+
+	def test_running_fan_cannot_be_turned_off_if_duration_not_expired
+		@f.start_for_duration(5)
+		mock(@f.can_turn_off?) { false }
+
+		assert_raises(AASM::InvalidTransition) {
+			@f.stop
+		}
+	end
+
+	#test code that will leave
+	def test_blah
+		timer = Timers.new
+		mock(timer).after(5) {@f.some_proc true}
+		result = @f.wait_for_a_while(timer)
+
+		assert result
 	end
 
 end
