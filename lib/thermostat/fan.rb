@@ -1,19 +1,21 @@
-require 'aasm'
+require_relative 'observable_state_machine'
 
-class Fan
-	include AASM
-
-	aasm do
-		state :idle, :initial => true
-		state :running
-		state :running_timed
-
-		event :start do
-			transitions :from => :idle, :to => :running
+module Thermostat
+	class Fan < ObservableStateMachine
+		def initialize
 		end
 
-		event :stop do
-			transitions :from => :running, :to => :idle
+		aasm do
+			state :idle, :initial => true
+			state :running
+
+			event :start do
+				transitions from: :idle, to: :running, on_transition: :on_transition
+			end
+
+			event :stop do
+				transitions from: :running, to: :idle, on_transition: :on_transition
+			end
 		end
 	end
 end

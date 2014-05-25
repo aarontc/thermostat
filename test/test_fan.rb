@@ -1,17 +1,17 @@
-require 'minitest/autorun'
+require_relative 'helper'
 
 require 'thermostat/fan'
 
 class TestFan < Minitest::Test
 	def setup
-		@f = Fan.new
+		@f = Thermostat::Fan.new
 	end
 
 	def test_create_a_fan
-		assert !@f.nil?
+		refute @f.nil?
 	end
 
-	def test_default_fan_stat_is_idle
+	def test_default_fan_state_is_idle
 		assert @f.idle?
 	end
 
@@ -28,4 +28,20 @@ class TestFan < Minitest::Test
 		assert @f.idle?
 	end
 
+	def test_fan_whines_on_double_start
+		@f.start
+
+		assert @f.running?
+		assert_raises(AASM::InvalidTransition) {
+			@f.start
+		}
+	end
+
+	def test_fan_whines_on_double_stop
+		assert @f.idle?
+
+		assert_raises(AASM::InvalidTransition) {
+			@f.stop
+		}
+	end
 end
