@@ -1,8 +1,13 @@
+require 'timers'
+
 require_relative 'observable_state_machine'
 
 module Thermostat
 	class Fan < ObservableStateMachine
-		def initialize
+		def initialize(timers: nil)
+			@timers = timers || Timers.new
+
+			super()
 		end
 
 		aasm do

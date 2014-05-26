@@ -1,10 +1,13 @@
-require_relative 'helper'
+require_relative 'time_machine'
 
+require 'timers'
 require 'thermostat/compressor'
 
-class TestCompressor < Minitest::Test
+class TestCompressor < TimeMachine
 	def setup
-		@uut = Thermostat::Compressor.new
+		super
+
+		@uut = Thermostat::Compressor.new timers: @timers
 	end
 
 
@@ -29,11 +32,10 @@ class TestCompressor < Minitest::Test
 
 
 	def test_cooling_down_to_idle_transition
-		timers = Timers.new
-		uut = Thermostat::Compressor.new cooldown_seconds: 1, timers: timers
+		assert @uut.cooling_down?, 'Compressor did not start in cooling_down state'
 
-		assert uut.cooling_down?, 'Compressor did not start in cooling_down state'
-		timers.wait
-		assert uut.idle?, 'Compressor did not return to idle state automatically'
+		fast_forward 180
+
+		assert @uut.idle?, 'Compressor did not return to idle state automatically'
 	end
 end

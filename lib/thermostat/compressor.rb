@@ -8,6 +8,8 @@ module Thermostat
 			@cooldown_seconds = cooldown_seconds || 3 * 60
 			@cooled_down = false
 			@timers = timers || Timers.new
+
+			super()
 		end
 
 		aasm do

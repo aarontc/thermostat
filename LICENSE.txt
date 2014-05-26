@@ -1,4 +1,4 @@
-Copyright (c) 2014 Aaron Ten Clay
+Copyright (c) 2014 Aaron Ten Clay, Chris Haverkate
 
 MIT License
 
