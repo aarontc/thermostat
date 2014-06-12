@@ -25,17 +25,17 @@ class TestThreeSpeedFanSingleStageCooler < TimeMachine
 		assert @compressor.may_start?, 'Compressor is not ready to start'
 
 		# Make sure the compressor doesn't kick in too early
-		@ambient.new_value 19.0
+		@ambient.send(:new_value, 19.0)
 		assert @compressor.idle?, 'Compressor started running too early'
 
 		# Fan and compressor should go on when temperature exceeds setpoint
-		@ambient.new_value 21.7
+		@ambient.send(:new_value, 21.7)
 		assert @compressor.running?, 'Compressor is not running during cooling'
 		assert @fan.running?, 'Fan is not running during cooling'
 		assert_equal :high, @fan.speed, 'Fan is not at high speed during cooling'
 
 		# Compressor should go off, fan goes to drying when temperature is below setpoint
-		@ambient.new_value 19.24
+		@ambient.send(:new_value, 19.24)
 		assert @compressor.cooling_down?, 'Compressor is not cooling down after running'
 		assert @fan.running?, 'Fan is not running during drying'
 		assert_equal :medium, @fan.speed, 'Fan is not at medium speed during drying'

@@ -12,6 +12,7 @@ module Thermostat
 			super
 		end
 
+		protected
 		def new_value(value)
 			if (value - @current_value).abs > 0.01
 				@current_value = value
