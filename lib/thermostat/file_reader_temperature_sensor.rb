@@ -1,4 +1,4 @@
-require 'listen'
+require 'rb-inotify'
 
 require_relative 'temperature_sensor'
 
@@ -6,28 +6,36 @@ module Thermostat
 	class FileReaderTemperatureSensor < TemperatureSensor
 
 		def initialize(path: nil)
-			@current_value = 0.0
 			@path = path
-			raise ArgumentError, 'path must be defined' if @path.nil?
+			raise ArgumentError, 'tpath must be defined' if @path.nil?
 
 			super()
-			@listener = Listen.to @path, &method(:listener_callback)
-			@listener.start
+			setup_notifier
 		end
 
-		def new_value(value)
-			if (value - @current_value).abs > 0.01
-				@current_value = value
-				changed
-				notify_observers self, Time.now, {current_value: @current_value}
-			end
+
+		def start
+			new_value read_file
+			@worker = Thread.new { @notifier.run }
+		end
+
+
+		def stop
+			@notifier.stop
 		end
 
 
 		private
-		def listener_callback(modified, added, removed)
-			value = File.read(@path)
-			new_value value
+		def read_file
+			File.read(@path).to_f
+		end
+
+
+		def setup_notifier
+			@notifier = INotify::Notifier.new
+			@notifier.watch(@path, :modify) do |event|
+				new_value read_file
+			end
 		end
 	end
 end
